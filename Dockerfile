@@ -26,6 +26,9 @@ ENV ALLOW_EMPTY_SENDER_DOMAINS=
 ENV MESSAGE_SIZE_LIMIT=
 # Enable additional debugging for connections to postfix
 ENV INBOUND_DEBUGGING=
+# SSL certs for TLS
+ENV TLS_PRIVKEY=
+ENV TLS_PUBKEY=
 
 # Install supervisor, postfix
 # Install postfix first to get the first account (101)

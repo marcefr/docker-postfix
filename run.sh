@@ -234,6 +234,16 @@ if [ -d /docker-init.db/ ]; then
 	done
 fi
 
+#STARTTLS support (letsencrypt keys)
+if [ -n "$TLS_PRIVKEY" ];then
+	sed -i -r -e 's/^#\(smtps.*\)/& -o smtpd_tls_wrappermode=yes -o smtpd_sasl_auth_enable=yes -o smtpd_reject_unlisted_recipient=no/' /etc/postfix/master.cf
+	postconf -e "smtpd_tls_cert_file=$TLS_PRIVKEY"
+	postconf -e "smtpd_tls_key_file=$TLS_PUBKEY"
+	postconf -e "smtpd_use_tls=yes"
+	postconf -e "smtpd_tls_session_cache_database=btree:${data_directory}/smtpd_scache"
+	postconf -e "smtp_tls_session_cache_database=btree:${data_directory}/smtp_scache"
+fi
+
 echo -e "‣ $notice Starting: ${emphasis}rsyslog${reset}, ${emphasis}postfix${reset}$DKIM_ENABLED"
 exec supervisord -c /etc/supervisord.conf
 
